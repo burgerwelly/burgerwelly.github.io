@@ -1,0 +1,1589 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <title>Burger Map 2019</title>
+
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #loadDiv {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      z-index: 2;
+      background-color: rgba(51,51,51,1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #loading {
+      height: 320px;
+      width: 320px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #infoDiv {
+
+      width:300px;
+      height:537px;
+      display:inline-block;
+
+      padding:7px;
+      margin: 0;
+      box-shadow: 2px 2px 4px rgba(50,50,50,0.2);
+
+      background-color: rgba(250,250,250,1);
+      font-family: 'Trebuchet MS', serif;
+    }
+
+    #infoTitle {
+
+      width:100%;
+      height:40px;
+      display:inline-block;
+
+      padding:5px;
+      margin: 0;
+      border-bottom: 1px solid rgba(200,200,200,1);
+      box-shadow: 0px 1px 3px rgba(50,50,50,0.2);
+      background-color: rgba(255,255,255,1);
+      font-family: 'Trebuchet MS', serif;
+
+      text-align: center;
+      vertical-align: middle;
+      line-height: 32px;
+      font-weight: 400;
+
+    }
+
+    #infoKey {
+
+      width:100%;
+      height:350px;
+      display:inline-block;
+
+      padding:5px;
+      margin: 0;
+      margin-top: 5px;
+      border-bottom: 1px solid rgba(200,200,200,1);
+      box-shadow: 0px 1px 3px rgba(50,50,50,0.2);
+      background-color: rgba(255,255,255,1);
+
+    }
+
+    #infoDetails {
+
+      width:100%;
+      height:32px;
+      display:inline-block;
+
+      padding:5px;
+      margin: 0;
+      margin-top: 5px;
+      border-bottom: 1px solid rgba(200,200,200,1);
+      box-shadow: 0px 1px 3px rgba(50,50,50,0.2);
+      background-color: rgba(255,255,255,1);
+      font-family: 'Trebuchet MS', serif;
+      font-size: 10;
+
+      text-align: center;
+      vertical-align: middle;
+      line-height: 20px;
+    }
+
+    #infoCredits {
+
+      width:100%;
+      height:50px;
+      display:inline-block;
+
+      padding:5px;
+      margin: 0;
+      margin-top: 5px;
+      border-bottom: 1px solid rgba(200,200,200,1);
+      box-shadow: 0px 1px 3px rgba(50,50,50,0.2);
+      background-color: rgba(255,255,255,1);
+      font-family: 'Trebuchet MS', serif;
+      font-size: 9;
+      font-style: italic;
+      color: rgba(50,50,50,0.9);
+
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .esri-view-width-less-than-large .esri-popup__action-text {
+      display: block !important;
+    }
+
+    .esri-popup__main-container {
+      max-height: 100% !important;
+    }
+
+    .esri-view-width-xsmall .esri-popup__main-container {
+      max-height: 400px !important;
+    }
+
+    .esri-view-width-xsmall .esri-popup__actions {
+      border-top: 1px solid rgba(200,200,200,1);
+    }
+
+    .esri-ui .esri-popup {
+      margin-top: 60px;
+    }
+
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.8/"></script>
+
+  <script type="text/plain" id="monday-arcade">
+
+    var days = $feature["Monday"]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+    }
+    return status
+
+
+  </script>
+  <script type="text/plain" id="tuesday-arcade">
+
+    var days = $feature["Tuesday"]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+    }
+    return status
+
+
+  </script>
+  <script type="text/plain" id="wednesday-arcade">
+
+    var days = $feature["Wednesday"]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+    }
+    return status
+
+
+  </script>
+  <script type="text/plain" id="thursday-arcade">
+
+    var days = $feature["Thursday"]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+    }
+    return status
+
+
+  </script>
+  <script type="text/plain" id="friday-arcade">
+
+    var days = $feature["Friday"]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+    }
+    return status
+
+
+  </script>
+  <script type="text/plain" id="saturday-arcade">
+
+    var days = $feature["Saturday"]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+    }
+    return status
+
+
+  </script>
+  <script type="text/plain" id="sunday-arcade">
+
+    var days = $feature["Sunday"]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+    }
+    return status
+
+
+  </script>
+
+  <script type="text/plain" id="opening-status-arcade">
+
+    var CurrentDay = Weekday(Date())
+
+    if (CurrentDay == 0){
+        var thisDay = "Sunday";
+    } else if (CurrentDay == 1){
+        var thisDay = "Monday";
+    } else if (CurrentDay == 2){
+        var thisDay = "Tuesday";
+    } else if (CurrentDay == 3){
+        var thisDay = "Wednesday";
+    } else if (CurrentDay == 4){
+        var thisDay = "Thursday";
+    } else if (CurrentDay == 5){
+        var thisDay = "Friday";
+    } else if (CurrentDay == 6){
+        var thisDay = "Saturday";
+    }
+
+    var days = $feature[thisDay]
+
+    if (days == "Closed"){
+        var status = "Closed";
+    } else if (days == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(days,'/')
+        var open1 = hours[0]
+        var close1 = hours[1]
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+        } else {
+            var open2 = 0;
+            var close2 = 0;}
+
+        var hour = Hour(Now())
+        var minute = Minute(Now())
+
+        if (minute < 10){
+            var time = Number(Text(hour) + Text(0) + Text(minute));
+        } else {
+            var time = Number(Text(hour) + Text(minute));
+        }
+
+        if (open1 < time && time < (close1-100)){
+            var status = "Open"
+
+        } else if ((close1-100) < time && time < close1){
+            var status = "Closing Soon"
+
+        } else if (open2 < time && time < (close2-100)){
+            var status = "Open"
+
+        } else if ((close2-100) < time && time < close2){
+            var status = "Closing Soon"
+
+        } else {
+            var status = "Closed";
+        }
+
+    }
+    return status
+
+
+  </script>
+  <script type="text/plain" id="todays-hours-arcade">
+    var cYear = Year(Now())
+    var cMonth = Month(Now())
+    var cDay = Day(Now())
+    var cDate = Date(cYear,cMonth,cDay);
+
+    var selectDay = Weekday(Date())
+    //var selectDay = Weekday(DateAdd((Date()),24,"hours"))
+
+    if (selectDay == 0){
+        var thenDay = "Sunday";
+    } else if (selectDay == 1){
+        var thenDay = "Monday";
+    } else if (selectDay == 2){
+        var thenDay = "Tuesday";
+    } else if (selectDay == 3){
+        var thenDay = "Wednesday";
+    } else if (selectDay == 4){
+        var thenDay = "Thursday";
+    } else if (selectDay == 5){
+        var thenDay = "Friday";
+    } else if (selectDay == 6){
+        var thenDay = "Saturday";
+    }
+
+    var thisDay = $feature[thenDay]
+
+    if (thisDay == "Closed"){
+        var status = "Closed";
+    } else if (thisDay == "Unknown"){
+        var status = "Unknown"
+    } else {
+        var hours = Split(thisDay,'/')
+
+        var open = hours[0]
+        var close = hours[1]
+
+        var openHour = Left(open,2)
+        var openMin = Right(open,2)
+        var closeHour = Left(close,2)
+        var closeMin = Right(open,2)
+
+        var openNum = Number(openHour)
+        var closeNum = Number(closeHour)
+
+        if (openNum < 12){
+            var oTime = openNum + ":" + openMin + "am";
+        } else if (openNum > 12 && openNum < 24){
+            var n = Text(openNum-12)
+            var oTime = n + ":" + openMin + "pm";
+        } else if (openNum == 24){
+            var n = Text(openNum-12)
+            var oTime = n + ":" + openMin + "am";
+        } else if (openNum == 12){
+    	var oTime = openNum + ":" + openMin + "pm";
+        }
+
+        if (closeNum < 12){
+            var cTime = closeNum + ":" + closeMin + "am";
+        } else if (closeNum > 12 && closeNum < 24){
+            var n = Text(closeNum-12)
+            var cTime = n + ":" + closeMin + "pm";
+        } else if (closeNum == 24){
+            var n = Text(closeNum-12)
+            var cTime = n + ":" + closeMin + "am";
+        } else if (closeNum == 12) {
+    	var cTime = closeNum + ":" + closeMin + "pm";
+        }
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+
+            var openHour2 = Left(open2,2)
+            var openMin2 = Right(open2,2)
+            var closeHour2 = Left(close2,2)
+            var closeMin2 = Right(open2,2)
+
+            var openNum2 = Number(openHour2)
+            var closeNum2 = Number(closeHour2)
+
+            if (openNum2 < 12){
+                var oTime2 = openNum2 + ":" + openMin2 + "am";
+            } else if (openNum2 > 12 && openNum2 < 24){
+                var n2 = Text(openNum2-12)
+                var oTime2 = n2 + ":" + openMin2 + "pm";
+            } else if (openNum2 == 24){
+                var n2 = Text(openNum2-12)
+                var oTime2 = n2 + ":" + openMin2 + "am";
+            } else if (openNum2 == 12) {
+    	    var oTime2 = openNum2 + ":" + openMin2 + "pm";
+            }
+
+            if (closeNum2 < 12){
+                var cTime2 = closeNum2 + ":" + closeMin2 + "am";
+            } else if (closeNum2 > 12 && closeNum2 < 24){
+                var n2 = Text(closeNum2-12)
+                var cTime2 = n2 + ":" + closeMin2 + "pm";
+            } else if (closeNum2 == 24){
+                var n2 = Text(closeNum2-12)
+                var cTime2 = n2 + ":" + closeMin2 + "am";
+            } else if (closeNum2 == 12) {
+    	    var cTime2 = closeNum2 + ":" + closeMin2 + "pm";
+            }
+
+            var displayTime = oTime + " to " + cTime + ' and ' + oTime2 + " to " + cTime2
+            var status = displayTime
+
+        } else {
+            var displayTime = oTime + " to " + cTime;
+            var status = displayTime
+        };
+    }
+
+    return status
+  </script>
+  <script type="text/plain" id="tomorrows-hours-arcade">
+    var cYear = Year(Now())
+    var cMonth = Month(Now())
+    var cDay = Day(Now())
+    var cDate = Date(cYear,cMonth,cDay);
+
+    //var selectDay = Weekday(Date())
+    var selectDay = Weekday(DateAdd((Date()),24,"hours"))
+
+    if (selectDay == 0){
+        var thenDay = "Sunday";
+    } else if (selectDay == 1){
+        var thenDay = "Monday";
+    } else if (selectDay == 2){
+        var thenDay = "Tuesday";
+    } else if (selectDay == 3){
+        var thenDay = "Wednesday";
+    } else if (selectDay == 4){
+        var thenDay = "Thursday";
+    } else if (selectDay == 5){
+        var thenDay = "Friday";
+    } else if (selectDay == 6){
+        var thenDay = "Saturday";
+    }
+
+    var thisDay = $feature[thenDay]
+
+    if (thisDay == "Closed"){
+        var status = "Closed";
+    }else if (thisDay == "Unknown"){
+        var status = "Unknown";
+    } else {
+        var hours = Split(thisDay,'/')
+
+        var open = hours[0]
+        var close = hours[1]
+
+        var openHour = Left(open,2)
+        var openMin = Right(open,2)
+        var closeHour = Left(close,2)
+        var closeMin = Right(open,2)
+
+        var openNum = Number(openHour)
+        var closeNum = Number(closeHour)
+
+        if (openNum < 12){
+            var oTime = openNum + ":" + openMin + "am";
+        } else if (openNum > 12 && openNum < 24){
+            var n = Text(openNum-12)
+            var oTime = n + ":" + openMin + "pm";
+        } else if (openNum == 24){
+            var n = Text(openNum-12)
+            var oTime = n + ":" + openMin + "am";
+        } else if (openNum == 12){
+    	var oTime = openNum + ":" + openMin + "pm";
+        }
+
+        if (closeNum < 12){
+            var cTime = closeNum + ":" + closeMin + "am";
+        } else if (closeNum > 12 && closeNum < 24){
+            var n = Text(closeNum-12)
+            var cTime = n + ":" + closeMin + "pm";
+        } else if (closeNum == 24){
+            var n = Text(closeNum-12)
+            var cTime = n + ":" + closeMin + "am";
+        } else if (closeNum == 12) {
+    	var cTime = closeNum + ":" + closeMin + "pm";
+        }
+
+        if (Count(hours) > 2){
+            var open2 = hours[2];
+            var close2 = hours[3];
+
+            var openHour2 = Left(open2,2)
+            var openMin2 = Right(open2,2)
+            var closeHour2 = Left(close2,2)
+            var closeMin2 = Right(open2,2)
+
+            var openNum2 = Number(openHour2)
+            var closeNum2 = Number(closeHour2)
+
+            if (openNum2 < 12){
+                var oTime2 = openNum2 + ":" + openMin2 + "am";
+            } else if (openNum2 > 12 && openNum2 < 24){
+                var n2 = Text(openNum2-12)
+                var oTime2 = n2 + ":" + openMin2 + "pm";
+            } else if (openNum2 == 24){
+                var n2 = Text(openNum2-12)
+                var oTime2 = n2 + ":" + openMin2 + "am";
+            } else if (openNum2 == 12) {
+    	    var oTime2 = openNum2 + ":" + openMin2 + "pm";
+            }
+
+            if (closeNum2 < 12){
+                var cTime2 = closeNum2 + ":" + closeMin2 + "am";
+            } else if (closeNum2 > 12 && closeNum2 < 24){
+                var n2 = Text(closeNum2-12)
+                var cTime2 = n2 + ":" + closeMin2 + "pm";
+            } else if (closeNum2 == 24){
+                var n2 = Text(closeNum2-12)
+                var cTime2 = n2 + ":" + closeMin2 + "am";
+            } else if (closeNum2 == 12) {
+    	    var cTime2 = closeNum2 + ":" + closeMin2 + "pm";
+            }
+
+            var displayTime = oTime + " to " + cTime + ' and ' + oTime2 + " to " + cTime2
+            var status = displayTime
+
+        } else {
+            var displayTime = oTime + " to " + cTime;
+            var status = displayTime
+        };
+    };
+
+    var T = thenDay + "'s hours: "
+    var TT = Concatenate([T," ",status])
+    return TT
+
+  </script>
+  <script type="text/plain" id="beer-match-arcade">
+
+    if ($feature["Price_with_Beer"] == Null){
+        var PB = ""
+    } else {
+        var PB = "with beer $" + $feature["Price_with_Beer"]
+    }
+    return PB;
+
+  </script>
+
+  <script>
+    require([
+
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/Layer",
+      "esri/layers/GroupLayer",
+      "esri/widgets/Home",
+      "esri/widgets/Locate",
+      "esri/widgets/LayerList",
+      "esri/widgets/Legend",
+      "esri/widgets/Expand",
+      "esri/widgets/Search",
+      "esri/widgets/Zoom",
+      "esri/layers/FeatureLayer",
+      "esri/core/watchUtils",
+      "dojo/domReady!",
+
+    ], function(Map, MapView, Layer, GroupLayer, Home, Locate, LayerList, Legend, Expand, Search, Zoom, FeatureLayer, watchUtils, dom) {
+
+
+      var date = new Date();
+      var day = date.getDay();
+
+      if (day == 0){
+        dayArcade = document.getElementById("sunday-arcade").text;
+        } else if (day == 1){
+        dayArcade = document.getElementById("monday-arcade").text;
+        } else if (day == 2){
+        dayArcade = document.getElementById("tuesday-arcade").text;
+        } else if (day == 3){
+        dayArcade = document.getElementById("wednesday-arcade").text;
+        } else if (day == 4){
+        dayArcade = document.getElementById("thursday-arcade").text;
+        } else if (day == 5){
+        dayArcade = document.getElementById("friday-arcade").text;
+        } else if (day == 6){
+        dayArcade = document.getElementById("saturday-arcade").text;
+      };
+
+      var arcadeExpressionInfos = [
+
+        {
+          name: "opening-status-arcade",
+          title: "Opening Status",
+          expression: document.getElementById("opening-status-arcade").text
+        },
+        {
+          name: "todays-hours-arcade",
+          title: "Todays Hours",
+          expression: document.getElementById("todays-hours-arcade").text
+        },
+        {
+          name: "tomorrows-hours-arcade",
+          title: "Tomorrows Hours",
+          expression: document.getElementById("tomorrows-hours-arcade").text
+        },
+        {
+          name: "beer-match-arcade",
+          title: "Beer Match",
+          expression: document.getElementById("beer-match-arcade").text
+        }
+      ];
+
+      var submitReview = {
+        title: "Review Burger",
+        id: "submit-review",
+        //image: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/1966420-200.png?raw=true",
+        className: "esri-icon-favorites",
+      };
+
+      var popupTemplate = {
+        title:  "{Burger}" + "<br>" +
+                "{Restaurant}",
+        actions: [submitReview],
+        content: [
+          {
+            type: "text",
+            text: "{Description}"
+          },
+          {
+            type: "text",
+            text: "<b>${Price}</b> " + "{expression/beer-match-arcade}" + "<br>" +
+                  "<i>{Dietary_Requirements}</i>"
+          },
+          {
+            type: "text",
+            text: "Currently: <b>{expression/opening-status-arcade}</b>" + "<br>" +
+                  "Today's hours: {expression/todays-hours-arcade}" + "<br>" +
+                  "{expression/tomorrows-hours-arcade}"
+          },
+          {
+            type: "text",
+            text: "<table align=left><tr align=center><td><font size=1><b>Overall &nbsp&nbsp </b></font></td><td align=center><font size=1> &nbsp&nbsp Value &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Presentation &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Service &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Creativity &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Pun &nbsp&nbsp </font></td></tr><tr><td align=center><font size=1><b>{xOverall} &nbsp </b></font></td><td align=center><font size=1>{xValue}</font></td><td align=center><font size=1>{xPresentation}</font></td><td align=center><font size=1>{xService}</font></td><td align=center><font size=1>{xCreativity}</font></td><td align=center><font size=1>{xPun}</font></td></tr></table>"
+          },
+          {
+            type: "text",
+            text: "<br>" + "<br>" +
+                  "{Wheelchair}" + "<br>" +
+                  "{Fries}" + "<br>" +
+                  "Phone: {Phone}"
+          },
+          {
+            type: "text",
+            text: "<a href={Website} target=_blank>Wellington on a Plate Website</a>" + "<br>" +
+                  "<a href={Instagram} target=_blank>{Restaurant} Instagram Location</a>"
+          },
+          {
+            type: "media",
+            mediaInfos: [
+              {
+                type: "image",
+                value: {
+                  sourceURL: "{Picture}"
+                }
+              }
+            ]
+          }
+        ],
+        expressionInfos: arcadeExpressionInfos
+      };
+
+      var rendererTemplate = {
+        type: "unique-value",
+        valueExpression: dayArcade,
+        valueExpressionTitle: "open-hours",
+        uniqueValueInfos: [
+          {
+            value: "Open",
+            symbol: createSymbol("#8EC63F"),
+            label: "Open"
+          },
+          {
+            value: "Closed",
+            symbol: createSymbol("#F05342"),
+            label: "Closed"
+          },
+          {
+            value: "Unknown",
+            symbol: createSymbol("#C1C1C1"),
+            label: "Unknown"
+          },
+          {
+            value: "Closing Soon",
+            symbol: createSymbol("#F89E36"),
+            label: "Closing Soon"
+          }]
+      };
+
+
+      var allLayers = "allLayers";
+
+        // Beef
+        var beefHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Beef/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Beef'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var beefLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Beef/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Beef'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Beef",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Beef.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var beefGroup = new GroupLayer({
+          layers: [beefLocation, beefHours],
+          title: "Beef",
+          listMode: "hide-children"
+        });
+
+        // Chicken
+        var chickenHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Chicken/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Chicken'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var chickenLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Chicken/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Chicken'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Chicken",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Chicken.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var chickenGroup = new GroupLayer({
+          layers: [chickenLocation, chickenHours],
+          title: "Chicken",
+          listMode: "hide-children"
+        });
+
+        // Duck
+        var duckHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Duck/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Duck'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var duckLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Duck/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Duck'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Duck",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Duck.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var duckGroup = new GroupLayer({
+          layers: [duckLocation, duckHours],
+          title: "Duck",
+          listMode: "hide-children"
+        });
+
+        // Lamb
+        var lambHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Lamb/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Lamb'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var lambLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Lamb/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Lamb'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Lamb",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Lamb.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var lambGroup = new GroupLayer({
+          layers: [lambLocation, lambHours],
+          title: "Lamb",
+          listMode: "hide-children"
+        });
+
+        // Pork
+        var porkHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Pork/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Pork'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var porkLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Pork/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Pork'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Pork",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Pork.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var porkGroup = new GroupLayer({
+          layers: [porkLocation, porkHours],
+          title: "Pork",
+          listMode: "hide-children"
+        });
+
+        // Seafood
+        var seafoodHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Seafood/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Seafood'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var seafoodLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Seafood/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Seafood'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Seafood",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Fish.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var seafoodGroup = new GroupLayer({
+          layers: [seafoodLocation, seafoodHours],
+          title: "Seafood",
+          listMode: "hide-children"
+        });
+
+
+        // Sweet
+        var sweetHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Sweet/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Sweet'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var sweetLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Sweet/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Sweet'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Sweet",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Sweet.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var sweetGroup = new GroupLayer({
+          layers: [sweetLocation, sweetHours],
+          title: "Sweet",
+          listMode: "hide-children"
+        });
+
+
+        // Vege
+        var vegeHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Vegetarian/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Vegetarian'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var vegeLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Vegetarian/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Vegetarian'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Vegetarian",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Vege.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+          });
+
+        var vegeGroup = new GroupLayer({
+          layers: [vegeLocation, vegeHours],
+          title: "Vegetarian",
+          listMode: "hide-children"
+        });
+
+        // Other
+        var otherHours = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Other/FeatureServer",
+          id: "Icon",
+          definitionExpression: "Burger_Protien = 'Other'",
+          layerId: 1,
+          popupEnabled: false,
+          renderer: rendererTemplate,
+          title: "Hours"
+        });
+
+        var otherLocation = new FeatureLayer({
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Other/FeatureServer",
+          id: "Symbol",
+          definitionExpression: "Burger_Protien = 'Other'",
+          layerId: 2,
+          outFields: ["*"],
+          title: "Other",
+          popupTemplate: popupTemplate,
+          renderer: {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "picture-marker",
+              url: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/Icons_Other.png?raw=true",   // autocasts as new SimpleMarkerSymbol()
+              height: "55px",
+              width: "55px",
+              angle: 0,
+              }
+            }
+        });
+
+        var otherGroup = new GroupLayer({
+          layers: [otherLocation, otherHours],
+          title: "Other",
+          listMode: "hide-children"
+        });
+
+      var map = new Map({
+        basemap: "streets-navigation-vector",
+        layers: [otherGroup, vegeGroup, sweetGroup, seafoodGroup, porkGroup, lambGroup, duckGroup, chickenGroup, beefGroup]
+      });
+
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [175.2, -41.1],
+        scale: 1000000,
+        rotation: 0,
+        ui: {
+          components: []
+        },
+        popup: {
+          dockEnabled: true,
+          actionsMenuEnabled: false,
+          dockOptions: {
+            breakpoint: false,
+            buttonEnabled: false,
+          }
+        },
+        constraints: {
+          minZoom: 8,
+          maxZoom: 18,
+          snapToZoom: true,
+          rotationEnabled: false,
+        },
+      });
+
+      view.when(function() {
+          limitMapExtent(view);
+        });
+
+      function limitMapExtent(view) {
+          var initialExtent = view.extent;
+          view.watch('stationary', function(event) {
+            if (!event) {
+              return;
+            }
+            //If the map has moved to the point where it's center is
+            //outside the initial boundaries, then move it back to the
+            //edge where it moved out
+            var currentCenter = view.extent.center;
+            if (!initialExtent.contains(currentCenter)) {
+
+              var newCenter = view.extent.center;
+
+
+              if (currentCenter.x < initialExtent.xmin) {
+                newCenter.x = initialExtent.xmin;
+              }
+              if (currentCenter.x > initialExtent.xmax) {
+                newCenter.x = initialExtent.xmax;
+              }
+              if (currentCenter.y < initialExtent.ymin) {
+                newCenter.y = initialExtent.ymin;
+              }
+              if (currentCenter.y > initialExtent.ymax) {
+                newCenter.y = initialExtent.ymax;
+              }
+              view.goTo(newCenter);
+            }
+          });
+        }
+
+      function getRotate() {
+        watchUtils.whenTrue(view, "stationary", function() {
+          if (view.rotation) {
+            view.rotation = 0
+            //alert("No Rotating.\nThank you!");
+          }
+        })
+      }
+
+      getRotate();
+
+
+      function getReview() {
+        var attributes = view.popup.selectedFeature.attributes;
+        var actual = attributes.Actual;
+        var restaurant = attributes.Restaurant;
+        var burger = attributes.Burger;
+        var lat = attributes.Latitude
+        var lng = attributes.Longitude
+
+        var surveyLink = "https://" + "survey123.arcgis.com/share/25db605e5a174932b7745e02705e9691?hide=field:location,field:actual" + "&field:restaurant=" + restaurant + "&field:burger=" + burger + "&center=" + lat + "," + lng
+        var win = window.open(surveyLink);
+        win.opener = null;
+      };
+
+      // Event handler that fires each time an action is clicked.
+      view.popup.on("trigger-action", function(event) {
+        // Execute the measureThis() function if the measure-this action is clicked
+        if (event.action.id === "submit-review") {
+          getReview();
+        }
+      });
+
+
+      function hide(div) {
+        var hideDIV = document.getElementById(div);
+        hideDIV.classList.add('hidden');
+      };
+
+      var loadLayer = view.map.layers.getItemAt(8)
+
+      // Hide the loading indicator when the view stops updating
+      watchUtils.whenTrue(loadLayer, "loaded", function(evt) {
+        setTimeout(function() {hide("loadDiv")} ,3500); //3500
+      });
+
+      function createSymbol(color) {
+        return {
+          type: "simple-marker", // autocasts as new SimpleFillSymbol()
+          color: color,
+          outline: {
+            width: 1.5,
+            color: [0, 0, 0, 1]
+          },
+          xoffset: 13.25,
+          yoffset: 13.25,
+          angle: 0
+        };
+      }
+
+      // Create widgets
+
+      var homeBtn = new Home({
+        view: view
+      });
+
+      var locateBtn = new Locate({
+        view: view,
+        useHeadingEnabled: false
+      });
+
+      var layerList = new LayerList({
+        view: view
+      });
+
+      var lyExpand = new Expand({
+        view: view,
+        content: layerList,
+      });
+
+      layerList.watch("activeLayer", function() {
+        var mobileSize =
+          view.heightBreakpoint === "xsmall" ||
+          view.widthBreakpoint === "xsmall";
+
+        if (mobileSize) {
+          bgExpand.collapse();
+        }
+      });
+
+      var legend = new Legend({
+        view: view,
+        layerInfos: [
+          {
+            layer: beefHours,
+            title: " "
+          },
+          {
+            layer: beefLocation,
+            title: "Beef"
+          },
+          {
+            layer: chickenLocation,
+            title: "Chicken"
+          },
+          {
+            layer: duckLocation,
+            title: "Duck"
+          },
+          {
+            layer: lambLocation,
+            title: "Lamb"
+          },
+          {
+            layer: porkLocation,
+            title: "Pork"
+          },
+          {
+            layer: seafoodLocation,
+            title: "Seafood"
+          },
+          {
+            layer: sweetLocation,
+            title: "Sweet"
+          },
+          {
+            layer: vegeLocation,
+            title: "Vegetarian"
+          },
+          {
+            layer: otherLocation,
+            title: "Other"
+          }
+        ],
+      });
+
+      var lgExpand = new Expand({
+        expandIconClass: "esri-icon-description",
+        view: view,
+        content: infoDiv,
+      });
+
+      expandHandle1 = watchUtils.pausable(lyExpand, "expanded", function(newValue, oldValue){
+        if(newValue === true){
+          expandHandle1.pause();
+          setTimeout(function(){
+            expandHandle2.resume();
+          }, 100);
+        }else{
+          expandHandle1.resume();
+        }
+        if(lgExpand.expanded){
+          lgExpand.collapse();
+        }
+      });
+
+      expandHandle2 = watchUtils.pausable(lgExpand, "expanded", function(newValue, oldValue){
+        if(newValue === true){
+          expandHandle2.pause();
+          setTimeout(function(){
+            expandHandle1.resume();
+          }, 100);
+        }else{
+          expandHandle2.resume();
+        }
+        if(lyExpand.expanded){
+          lyExpand.collapse();
+        }
+      });
+
+      var searchWidget = new Search({
+        view: view,
+          popupOpenOnSelect: false,
+          popupEnabled: false,
+          locationEnabled: false,
+          includeDefaultSources: false,
+          sources: [{
+            featureLayer: {url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Locations/FeatureServer/2"
+          },
+          searchFields: ["Burger", "Restaurant"],
+          suggestionTemplate: "{Restaurant}, {Burger}",
+          placeholder: "Restaurant or Burger",
+          outFields: ["*"],
+          suggestionsEnabled: true,
+          exactMatch: false,
+          zoomScale: 3200,
+          resultSymbol: {
+             type: "simple-marker",  // autocasts as new PictureMarkerSymbol()
+             size: 30,
+             color: [50, 50, 50, 0],
+             outline: { width: 6, color: [50, 50, 50, 1] }
+          },
+        }]
+      });
+
+      var zoom = new Zoom({
+        view: view
+      });
+
+      view.ui.add(searchWidget, "top-right");
+      view.ui.add(lgExpand, "top-left");
+      view.ui.add(homeBtn, "top-left");
+      view.ui.add(zoom, "top-left");
+      view.ui.add(locateBtn, "top-left");
+      view.ui.add(lyExpand, "top-left");
+
+    });
+  </script>
+</head>
+<body>
+
+  <div id="loadDiv">
+    <img id='loading' src="https://media.giphy.com/media/WBTUlyKBVlTTa/giphy.gif"/>
+  </div>
+
+  <div id="viewDiv"></div>
+
+  <div id="infoDiv">
+    <div id="infoTitle">Burger Wellington Map 2019</div>
+    <img id="infoKey" src="https://github.com/RJC32/RJC32.github.io/blob/master/icons/Legend.png?raw=true"></img>
+    <a id="infoDetails" href="https://spt-eaglegis.maps.arcgis.com/apps/opsdashboard/index.html#/c283e565e9ac426d9ffa5f1676758dc4" target="_blank">Burger Dashboard</a>
+    <a id="infoDetails" href="https://survey123.arcgis.com/share/90eb74cbb7d0499e95885d73d9f9410f" target="_blank">Submit Feedback</a>
+    <div id="infoCredits">Made by: Ryan Cooper <br> Using Esri Technology</div>
+  </div>
+
+</body>
+</html>
