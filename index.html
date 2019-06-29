@@ -19,15 +19,18 @@
       height: 100%;
       width: 100%;
       z-index: 2;
-      background-color: rgba(51,51,51,1);
+      background-color: rgba(255,255,255,1);
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     #loading {
-      height: 320px;
-      width: 320px;
+      display: block;
+      max-width:1000px;
+      max-height:750px;
+      width: auto;
+      height: auto;
     }
 
     .hidden {
@@ -1572,7 +1575,7 @@
 <body>
 
   <div id="loadDiv">
-    <img id='loading' src="https://media.giphy.com/media/WBTUlyKBVlTTa/giphy.gif"/>
+    <img id='loading' src="https://github.com/burgerwelly/burgerwelly.github.io/blob/master/icons/loading.gif?raw=true"/>
   </div>
 
   <div id="viewDiv"></div>
