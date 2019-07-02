@@ -1383,7 +1383,7 @@
         var lat = attributes.Latitude
         var lng = attributes.Longitude
 
-        var surveyLink = "https://" + "survey123.arcgis.com/share/25db605e5a174932b7745e02705e9691?hide=field:location,field:actual" + "&field:restaurant=" + restaurant + "&field:burger=" + burger + "&center=" + lat + "," + lng
+        var surveyLink = "https://" + "survey123.arcgis.com/share/25db605e5a174932b7745e02705e9691?hide=field:location,field:actual" + "&field:actual=" + restaurant + "&field:restaurant=" + restaurant + "&field:burger=" + burger + "&center=" + lat + "," + lng
         var win = window.open(surveyLink);
         win.opener = null;
       };
