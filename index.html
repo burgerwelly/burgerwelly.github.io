@@ -132,6 +132,10 @@
       display: block !important;
     }
 
+    .esri-popup__action-text {
+      overflow: visible !important;
+    }
+
     .esri-popup__main-container {
       max-height: 100% !important;
     }
@@ -875,17 +879,17 @@
         }
       ];
 
-      var submitReview = {
-        title: "Review Burger",
-        id: "submit-review",
+      var submitEvidence = {
+        title: "Acknowledge Consumption",
+        id: "submit-eat",
         //image: "https://github.com/RJC32/RJC32.github.io/blob/master/icons/1966420-200.png?raw=true",
-        className: "esri-icon-favorites",
+        className: "esri-icon-radio-checked",
       };
 
       var popupTemplate = {
         title:  "{Burger}" + "<br>" +
                 "{Restaurant}",
-        actions: [submitReview],
+        actions: [submitEvidence],
         content: [
           {
             type: "text",
@@ -904,16 +908,7 @@
           },
           {
             type: "text",
-            text: "<i>All reviews are currently randomized <br>Burger Wellington starts on the 17th of August</i>"
-          },
-          {
-            type: "text",
-            text: "<table align=left><tr align=center><td><font size=1><b>Overall &nbsp&nbsp </b></font></td><td align=center><font size=1> &nbsp&nbsp Value &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Presentation &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Service &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Creativity &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp&nbsp Pun &nbsp&nbsp </font></td><td align=center><font size=1> &nbsp Review Count &nbsp </font></td></tr><tr><td align=center><font size=1><b>{xOverall} &nbsp </b></font></td><td align=center><font size=1>{xValue}</font></td><td align=center><font size=1>{xPresentation}</font></td><td align=center><font size=1>{xService}</font></td><td align=center><font size=1>{xCreativity}</font></td><td align=center><font size=1>{xPun}</font></td><td align=center><font size=1>{xAmount}</font></td></tr></table>"
-          },
-          {
-            type: "text",
-            text: "<br>" + "<br>" +
-                  "{Wheelchair}" + "<br>" +
+            text: "{Wheelchair}" + "<br>" +
                   "{Fries}" + "<br>" +
                   "Phone: {Phone}"
           },
@@ -969,20 +964,18 @@
 
         // Beef
         var beefHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Beef/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Beef'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var beefLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Beef/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Beef'",
-          layerId: 2,
           outFields: ["*"],
           title: "Beef",
           popupTemplate: popupTemplate,
@@ -1006,20 +999,18 @@
 
         // Chicken
         var chickenHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Chicken/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Chicken'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var chickenLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Chicken/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Chicken'",
-          layerId: 2,
           outFields: ["*"],
           title: "Chicken",
           popupTemplate: popupTemplate,
@@ -1043,20 +1034,18 @@
 
         // Duck
         var duckHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Duck/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Duck'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var duckLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Duck/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Duck'",
-          layerId: 2,
           outFields: ["*"],
           title: "Duck",
           popupTemplate: popupTemplate,
@@ -1080,20 +1069,18 @@
 
         // Lamb
         var lambHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Lamb/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Lamb'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var lambLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Lamb/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Lamb'",
-          layerId: 2,
           outFields: ["*"],
           title: "Lamb",
           popupTemplate: popupTemplate,
@@ -1117,20 +1104,18 @@
 
         // Pork
         var porkHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Pork/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Pork'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var porkLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Pork/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Pork'",
-          layerId: 2,
           outFields: ["*"],
           title: "Pork",
           popupTemplate: popupTemplate,
@@ -1154,20 +1139,18 @@
 
         // Seafood
         var seafoodHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Seafood/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Seafood'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var seafoodLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Seafood/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Seafood'",
-          layerId: 2,
           outFields: ["*"],
           title: "Seafood",
           popupTemplate: popupTemplate,
@@ -1192,20 +1175,18 @@
 
         // Sweet
         var sweetHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Sweet/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Sweet'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var sweetLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Sweet/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Sweet'",
-          layerId: 2,
           outFields: ["*"],
           title: "Sweet",
           popupTemplate: popupTemplate,
@@ -1230,20 +1211,18 @@
 
         // Vege
         var vegeHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Vegetarian/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Vegetarian'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var vegeLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Vegetarian/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer/0",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Vegetarian'",
-          layerId: 2,
           outFields: ["*"],
           title: "Vegetarian",
           popupTemplate: popupTemplate,
@@ -1267,20 +1246,18 @@
 
         // Other
         var otherHours = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Other/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Hours/FeatureServer",
           id: "Icon",
           definitionExpression: "Burger_Protien = 'Other'",
-          layerId: 1,
           popupEnabled: false,
           renderer: rendererTemplate,
           title: "Hours"
         });
 
         var otherLocation = new FeatureLayer({
-          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Other/FeatureServer",
+          url: "https://services1.arcgis.com/Ym9pldMfKjlrPyiP/arcgis/rest/services/Burger_Locations/FeatureServer",
           id: "Symbol",
           definitionExpression: "Burger_Protien = 'Other'",
-          layerId: 2,
           outFields: ["*"],
           title: "Other",
           popupTemplate: popupTemplate,
@@ -1388,7 +1365,7 @@
         var lat = attributes.Latitude
         var lng = attributes.Longitude
 
-        var surveyLink = "https://" + "survey123.arcgis.com/share/25db605e5a174932b7745e02705e9691?hide=field:location,field:actual" + "&field:actual=" + restaurant + "&field:restaurant=" + restaurant + "&field:burger=" + burger + "&center=" + lat + "," + lng
+        var surveyLink = "https://" + "survey123.arcgis.com/share/f7e130c1986e4209b9b2e418827b038f?hide=field:location,field:actual" + "&field:actual=" + restaurant + "&field:restaurant=" + restaurant + "&field:burger=" + burger + "&center=" + lat + "," + lng
         var win = window.open(surveyLink);
         win.opener = null;
       };
@@ -1396,7 +1373,7 @@
       // Event handler that fires each time an action is clicked.
       view.popup.on("trigger-action", function(event) {
         // Execute the measureThis() function if the measure-this action is clicked
-        if (event.action.id === "submit-review") {
+        if (event.action.id === "submit-eat") {
           getReview();
         }
       });
@@ -1427,6 +1404,11 @@
           angle: 0
         };
       }
+
+      watchUtils.whenTrue(loadLayer, "loaded", function(evt) {
+        setTimeout(function() {alert("Website is currently under development - apologies for any inconvenience")} ,5000); //3500
+      });
+
 
       // Create widgets
 
@@ -1537,6 +1519,8 @@
           lyExpand.collapse();
         }
       });
+
+      view.popup.viewModel.actions.getItemAt(0).visible = false;
 
       var searchWidget = new Search({
         view: view,
