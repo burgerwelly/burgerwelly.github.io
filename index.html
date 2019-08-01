@@ -40,7 +40,7 @@
     #infoDiv {
 
       width:300px;
-      height:514px;
+      height:554px;
       display:inline-block;
 
       padding:7px;
@@ -99,6 +99,38 @@
       border-bottom: 1px solid rgba(200,200,200,1);
       box-shadow: 0px 1px 3px rgba(50,50,50,0.2);
       background-color: rgba(255,255,255,1);
+      font-family: 'Trebuchet MS', serif;
+      font-size: 10;
+
+      text-align: center;
+      vertical-align: middle;
+      line-height: 20px;
+    }
+
+    #infoDetailsL {
+
+      width:40%;
+      position: absolute;
+      left: 10%;
+      height:32px;
+      display:inline-block;
+
+      font-family: 'Trebuchet MS', serif;
+      font-size: 10;
+
+      text-align: center;
+      vertical-align: middle;
+      line-height: 20px;
+    }
+
+    #infoDetailsR {
+
+      width:40%;
+      position: absolute;
+      left: 50%;
+      height:32px;
+      display:inline-block;
+
       font-family: 'Trebuchet MS', serif;
       font-size: 10;
 
@@ -880,7 +912,7 @@
       ];
 
       var submitEvidence = {
-        title: "Acknowledge Consumption",
+        title: "I ate this",
         id: "submit-eat",
         image: "https://github.com/burgerwelly/burgerwelly.github.io/blob/master/icons/K&F.png?raw=true",
         //className: "esri-icon-radio-checked",
@@ -927,6 +959,11 @@
                 }
               }
             ]
+          },
+          {
+            type: "text",
+            text: "Use the 'I ate this' button to record that you ate this Burger!" + "<br>" +
+                  "<a href=https://arcg.is/1Ln8vq target=_blank>View all records</a>"
           }
         ],
         expressionInfos: arcadeExpressionInfos
@@ -1579,6 +1616,12 @@
     <div id="infoTitle">Burger Wellington Map 2019<br><font size="1" color="rgb(50,50,50)">Unofficial</font></div>
     <img id="infoKey" src="https://github.com/burgerwelly/burgerwelly.github.io/blob/master/icons/Legend.png?raw=true"></img>
     <a id="infoDetails" href="https://survey123.arcgis.com/share/90eb74cbb7d0499e95885d73d9f9410f" target="_blank">Submit Feedback</a>
+
+    <div id="infoDetails">
+      <a id="infoDetailsL" href="https://spt-eaglegis.maps.arcgis.com/apps/opsdashboard/index.html#/348b15b9267d4ef49a4a63c38b34a271" target="_blank">Desktop Dashboard</a>
+      <a id="infoDetailsR" href="https://spt-eaglegis.maps.arcgis.com/apps/opsdashboard/index.html#/08127b7003b0433a93a9fa2eb951fded" target="_blank">Mobile Dashboard</a>
+    </div>
+
     <div id="infoCredits">Made as a personal project using Esri Technology<br>This map is not an offical WOAP product</div>
   </div>
 
