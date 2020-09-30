@@ -73,8 +73,10 @@ li.disabled{
 }
 
 .vsb-main button{
-	min-width: 120px;
-	border-radius: 0;
+	min-width: 250px;
+	font-family: 'Noto Sans';
+	width: auto;
+	border-radius: 1;
 	width: 100%;
 	text-align: left;
 	z-index: 1;
@@ -132,10 +134,12 @@ li.disabled{
 }
 
 .vsb-menu .multi li {
+	font-family: 'Noto Sans';
 	font-size: 14px;
 	background-color: #fff;
 	min-height:1.4em;
-	padding: 0.2em 2em 0.2em 26px;
+	padding: 0.8em 3em 0.4em 26px;
+	min-width: 200px;
 }
 
 .vsb-menu .multi li.grouped-option {
