@@ -214,12 +214,14 @@
       "esri/layers/FeatureLayer",
       "esri/widgets/Home",
       "esri/widgets/Zoom",
+      "esri/widgets/Compass",
       "esri/widgets/Locate",
+      "esri/widgets/Search",
       "esri/widgets/Expand",
-
+      "esri/core/watchUtils",
     ],
 
-    function (Map, MapView, FeatureLayer, Home, Zoom, Locate, Expand) {
+    function (Map, MapView, FeatureLayer, Home, Zoom, Compass, Locate, Search, Expand, watchUtils) {
 
       // Set popupTemplate
 
@@ -287,8 +289,8 @@
             }
           ]
         },
-        clusterMinSize: "30px",
-        clusterMaxSize: "60px",
+        clusterMinSize: "70px",
+        clusterMaxSize: "100px",
         labelingInfo: [
           {
             deconflictionStrategy: "none",
@@ -299,9 +301,9 @@
               type: "text",
               color: "#ffffff",
               font: {
-                weight: "bold",
+                weight: "bolder",
                 family: "Noto Sans",
-                size: "14px"
+                size: "20px"
               }
             },
             labelPlacement: "center-center"
@@ -348,7 +350,35 @@
         },
       });
 
-      // Filters
+      // search
+
+      var searchWidget = new Search({
+        view: view,
+        allPlaceholder: "Restaurant or Burger",
+        locationEnabled: false,
+        includeDefaultSources: false,
+
+        sources: [
+          {
+            layer: burger_feature,
+            searchFields: ["venue_name", "burger_name"],
+            suggestionTemplate: "{venue_name}, {burger_name}",
+            exactMatch: false,
+            outFields: ["*"],
+            name: "Restaurant or Burger",
+            placeholder: "Restaurant or Burger",
+            maxResults: 4,
+            maxSuggestions: 4,
+            zoomScale: 3200,
+            resultSymbol: {
+               type: "simple-marker",  // autocasts as new PictureMarkerSymbol()
+               size: 30,
+               color: [50, 50, 50, 0],
+               outline: { width: 6, color: [50, 50, 50, 1] }
+            },
+          }
+        ]
+      });
 
 
       // Create widgets
@@ -363,6 +393,10 @@
         view: view
       });
 
+      var compass_button = new Compass({
+        view: view,
+      });
+
       var zoom_button = new Zoom({
         view: view
       });
@@ -372,18 +406,20 @@
         useHeadingEnabled: false
       });
 
-      const protein_expand = new Expand({
+      var filter_button = new Expand({
         view: view,
         content: filter,
         expandIconClass: "esri-icon-filter",
         group: "top-left"
       });
 
+      view.ui.add(searchWidget, "top-right");
       view.ui.add(info_button, "top-left");
       view.ui.add(home_button, "top-left");
+      view.ui.add(compass_button, "bottom-left");
       view.ui.add(zoom_button, "top-left");
       view.ui.add(locate_button, "top-left");
-      view.ui.add(protein_expand, "top-left");
+      view.ui.add(filter_button, "top-left");
 
       // Filters
       let cluster_layerview;
@@ -446,10 +482,8 @@
             filter1 = entry1 + " IN (" + result1 + ")";
           };
 
-          console.log(result2)
-
           if(result2.length == 0){
-            filter2 = entry2 + " IS NULL Or " + entry2 + " IS NOT NULL";
+            filter2 = entry2 + " IS NOT NULL";
           } else {
             result_joined = result2.join("%' And " + entry2 + " LIKE '%")
             filter2 = entry2 + " LIKE '%" + result_joined + "%'";
@@ -457,7 +491,6 @@
 
           var filter_list = [filter1, filter2];
           var where_clause = {where: filter_list.join(" And ")}
-          console.log(filter2);
           console.log(where_clause);
           cluster_layerview.filter = where_clause;
           standard_layerview.filter = where_clause;
@@ -472,8 +505,73 @@
         standard_layerview = layerView;
       });
 
-    });
+      // Close Expand Widgets
 
+      expandHandle1 = watchUtils.pausable(info_button, "expanded", function(newValue, oldValue){
+        if(newValue === true){
+          expandHandle1.pause();
+          setTimeout(function(){
+            expandHandle2.resume();
+          }, 100);
+        }else{
+          expandHandle1.resume();
+        }
+        if(filter_button.expanded){
+          filter_button.collapse();
+        }
+      });
+
+      expandHandle2 = watchUtils.pausable(filter_button, "expanded", function(newValue, oldValue){
+        if(newValue === true){
+          expandHandle2.pause();
+          setTimeout(function(){
+            expandHandle1.resume();
+          }, 100);
+        }else{
+          expandHandle2.resume();
+        }
+        if(info_button.expanded){
+          info_button.collapse();
+        }
+      });
+
+      var goto_options = {
+        duration: 2000
+      };
+
+      view.on("click", function (event) {
+        var screenPoint = {
+          x: event.x,
+          y: event.y
+      };
+
+      // Search for graphics at the clicked location
+      view.hitTest(screenPoint).then(function (response) {
+        if (response.results.length) {
+          var graphic = response.results.filter(function (result) {
+          return result.graphic.layer === burger_feature;
+        })[0].graphic;}
+        var lng = graphic.attributes.lng
+        var lat = graphic.attributes.lat
+        view.goTo({
+          center: [lng, lat]
+        },goto_options);
+      });
+
+      view.hitTest(screenPoint).then(function (response) {
+        if (response.results.length) {
+          var graphic = response.results.filter(function (result) {
+          return result.graphic.layer === cluster_feature;
+        })[0].graphic;}
+        var lng = graphic.attributes.lng
+        var lat = graphic.attributes.lat
+        view.goTo({
+          center: [lng, lat]
+        },goto_options);
+      });
+
+    });
+  });
   </script>
 
 </html>
