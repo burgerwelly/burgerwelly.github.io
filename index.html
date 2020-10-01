@@ -180,6 +180,29 @@
           background-color: #e0e0e0;
       }
 
+      #loadDiv {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        z-index: 2;
+        background-color: rgba(255,255,255,1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #loading {
+        display: block;
+        max-width:1000px;
+        max-height:750px;
+        width: auto;
+        height: auto;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
 
     </style>
 
@@ -194,6 +217,10 @@
   </head>
 
   <body>
+
+    <div id="loadDiv">
+      <img id='loading' src="https://github.com/burgerwelly/burgerwelly.github.io/blob/master/icons/loading.gif?raw=true"/>
+    </div>
 
     <div id="viewDiv"></div>
 
@@ -1614,6 +1641,21 @@
       });
 
     });
+
+    function hide(div) {
+      var hideDIV = document.getElementById(div);
+      hideDIV.classList.add('hidden');
+    };
+
+    console.log(view.map.layers)
+
+    var loadLayer = view.map.layers.getItemAt(2)
+
+    // Hide the loading indicator when the view stops updating
+    watchUtils.whenTrue(loadLayer, "loaded", function(evt) {
+      setTimeout(function() {hide("loadDiv")} ,2000); //3500
+    });
+
   });
   </script>
 
