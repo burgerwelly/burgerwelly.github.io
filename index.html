@@ -27,6 +27,14 @@
         display: block !important;
       }
 
+      .esri-popup__action-text {
+        overflow: visible !important;
+      }
+
+      .esri-popup__main-container {
+        max-height: 100% !important;
+      }
+
       .esri-view-width-xsmall .esri-popup__main-container {
         max-height: 400px !important;
       }
@@ -341,7 +349,7 @@
             var n = Text(openNum-12)
             var oTime = n + ":" + openMin + "am";
         } else if (openNum == 12){
-      var oTime = openNum + ":" + openMin + "pm";
+    	var oTime = openNum + ":" + openMin + "pm";
         }
 
         if (closeNum < 12){
@@ -353,7 +361,7 @@
             var n = Text(closeNum-12)
             var cTime = n + ":" + closeMin + "am";
         } else if (closeNum == 12) {
-      var cTime = closeNum + ":" + closeMin + "pm";
+    	var cTime = closeNum + ":" + closeMin + "pm";
         }
 
         if (Count(hours) > 2){
@@ -377,7 +385,7 @@
                 var n2 = Text(openNum2-12)
                 var oTime2 = n2 + ":" + openMin2 + "am";
             } else if (openNum2 == 12) {
-          var oTime2 = openNum2 + ":" + openMin2 + "pm";
+    	    var oTime2 = openNum2 + ":" + openMin2 + "pm";
             }
 
             if (closeNum2 < 12){
@@ -389,7 +397,7 @@
                 var n2 = Text(closeNum2-12)
                 var cTime2 = n2 + ":" + closeMin2 + "am";
             } else if (closeNum2 == 12) {
-          var cTime2 = closeNum2 + ":" + closeMin2 + "pm";
+    	    var cTime2 = closeNum2 + ":" + closeMin2 + "pm";
             }
 
             var displayTime = oTime + " to " + cTime + ' and ' + oTime2 + " to " + cTime2
@@ -896,10 +904,11 @@
       "esri/widgets/Locate",
       "esri/widgets/Search",
       "esri/widgets/Expand",
+      "esri/geometry/support/webMercatorUtils",
       "esri/core/watchUtils",
     ],
 
-    function (Map, MapView, FeatureLayer, Home, Zoom, Compass, Locate, Search, Expand, watchUtils) {
+    function (Map, MapView, FeatureLayer, Home, Zoom, Compass, Locate, Search, Expand, webMercatorUtils, watchUtils) {
 
       // Set popupTemplate
 
@@ -936,14 +945,14 @@
           expression: document.getElementById("opening-status-arcade").text
         },
         {
+          name: "todays-hours-arcade",
+          title: "Todays Hours",
+          expression: document.getElementById("todays-hours-arcade").text
+        },
+        {
           name: "tomorrows-hours-arcade",
           title: "Tomorrows Hours",
           expression: document.getElementById("tomorrows-hours-arcade").text
-        },
-        {
-          name: "beer-match-arcade",
-          title: "Beer Match",
-          expression: document.getElementById("beer-match-arcade").text
         }
       ];
 
@@ -1526,6 +1535,20 @@
         duration: 2000
       };
 
+      function recenter(lat, lng){
+
+        var current_extent = view.extent
+        min_extent = webMercatorUtils.xyToLngLat(current_extent.xmin, current_extent.ymin)
+
+        var new_lng = lng
+        var new_lat = (lat + min_extent[1]) /2
+
+        view.goTo({
+          extent: [new_lng, new_lat]
+        },goto_options);
+
+      }
+
       view.on("click", function (event) {
         var screenPoint = {
           x: event.x,
@@ -1538,11 +1561,29 @@
           var graphic = response.results.filter(function (result) {
           return result.graphic.layer === burger_feature;
         })[0].graphic;}
+
+        current_zoom = view.zoom
+        extent_change = current_zoom / 20
+
+
         var lng = graphic.attributes.lng
         var lat = graphic.attributes.lat
+
+        console.log(lat)
+        console.log(current_zoom)
+
+
         view.goTo({
-          center: [lng, lat]
+          extent: [lng, lat]
         },goto_options);
+
+        recenter(lat, lng)
+
+        // var current_extent = view.extent
+        // min_extent = webMercatorUtils.xyToLngLat(current_extent.xmin, current_extent.ymin)
+        // var lng1 = graphic.attributes.lng
+        // var lat1 = (graphic.attributes.lat + min_extent[1]) /2
+
       });
 
       view.hitTest(screenPoint).then(function (response) {
