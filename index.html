@@ -13,6 +13,7 @@
     </title>
 
     <link href="vanillaSelectBox.css" rel="stylesheet"/>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
 
     <style>
 
@@ -65,7 +66,7 @@
         box-shadow: 0px 1px 3px rgba(50,50,50,0.2);
         background-color: rgba(255,255,255,1);
         font-weight: 600;
-        font-size: 18px;
+        font-size: 16px;
       }
 
       #infoKey {
@@ -104,6 +105,17 @@
         vertical-align: middle;
       }
 
+      .filter_div {
+        height:auto;
+        width:100%;
+        padding:15px;
+        border-bottom: 1px solid rgba(200,200,200,1);
+        box-shadow: 0px 1px 3px rgba(50,50,50,0.2);
+        background-color: rgba(255,255,255,1);
+        font-size: 14px;
+        color: rgba(50,50,50,0.9);
+      }
+
       #filterTitle {
         padding: 20px;
         border-bottom: 1px solid rgba(200,200,200,1);
@@ -113,32 +125,37 @@
         font-size: 18px;
       }
 
-      .filter-zone {
-          display: block;
-          width: 100%;
-          min-height: 200px;
-      }
-
-
-
       .filter_button_div {
           margin-top: 20px;
       }
 
       label {
-          display: inline-block;
-          min-width: 220px;
-          width: 220px;
-          padding: 10px;
+          float: left;
+          width: auto;
+          padding: 5px;
           border-top: 10px;
           font-family: 'Noto Sans';
           text-align: left;
-          font-weight: bolder;
+          font-weight: bold;
+          margin-top: 10px;
+      }
+
+      .button_left {
+        width: 50%;
+        height: 10px;
+        float: left;
+        margin-bottom: 25px;
+      }
+
+      .button_right {
+        width: 50%;
+        height: 10px;
+        float: right;
+        margin-bottom: 25px;
       }
 
       button.filter_button, button.empty_button {
         display:inline-block;
-          margin-right: 0;
           text-align: center;
           white-space: nowrap;
           vertical-align: middle;
@@ -148,11 +165,15 @@
           color: #333;
           background: white;
           border: 1px solid #ccc !important;
-          color: #333;
           line-height: 20px;
           font-size: 14px;
-          padding: 4px 12px;
-          margin-bottom: 2px;
+          padding: 4px;
+          width: 90% !important;
+      }
+
+      button.empty_button {
+        color: #969696;
+        background-color: #e8e8e8;
       }
 
       button.filter_button:hover {
@@ -182,36 +203,45 @@
       <div id="infoCredits">Made as a personal project using Esri Technology<br>This map is not an offical WOAP product</div>
     </div>
 
-    <div id="filter">
+    <div id="filter" class="filter">
+      <div class="filter_div">
 
-      <div class="filterTitle">
-        <button id="filter_button" class="filter_button" style="width:140px;"
-                onClick="getValues('protein_select', 'protein', 'dietary_select',
-                                    'dietary_requirements', 'availability_select',
-                                    'availability', 'wheelchair_select', 'wheelchair_access',
-                                    'fries_select', 'fries', 'avocado_select', 'has_avocado');">Filter
-        </button>
-        <button id="empty_button" class="empty_button" style="width:140px;" onClick="empty();">Clear</button>
+        <div class="filterTitle">
+
+          <div class="button_left">
+            <button id="filter_button" class="filter_button" style="width:140px;"
+                    onClick="getValues('protein_select', 'protein', 'dietary_select',
+                                        'dietary_requirements', 'availability_select',
+                                        'availability', 'wheelchair_select', 'wheelchair_access',
+                                        'fries_select', 'fries', 'avocado_select', 'has_avocado');">Apply Filter
+            </button>
+          </div>
+
+          <div class="button_right">
+            <button id="empty_button" class="empty_button" style="width:140px;" onClick="empty();">Clear Filter</button>
+          </div>
+
+
+        </div>
+
+        <label>Burger Protein</label>
+        <select id='protein_select' multiple size="3"></select>
+
+        <label>Dietary Requirements</label>
+        <select id='dietary_select' multiple size="3"></select>
+
+        <label>Burger Availability</label>
+        <select id='availability_select' multiple size="3"></select>
+
+        <label>Is Wheelchair Accessible</label>
+        <select id='wheelchair_select' multiple size="3"></select>
+
+        <label>Comes with Fries</label>
+        <select id='fries_select' multiple size="3"></select>
+
+        <label>Has Avocado</label>
+        <select id='avocado_select' multiple size="3"></select>
       </div>
-
-      <label>Burger Protein</label>
-      <select id='protein_select' multiple size="3"></select>
-
-      <label>Dietary Requirements</label>
-      <select id='dietary_select' multiple size="3"></select>
-
-      <label>Burger Availability</label>
-      <select id='availability_select' multiple size="3"></select>
-
-      <label>Is Wheelchair Accessible</label>
-      <select id='wheelchair_select' multiple size="3"></select>
-
-      <label>Comes with Fries</label>
-      <select id='fries_select' multiple size="3"></select>
-
-      <label>Has Avocado</label>
-      <select id='avocado_select' multiple size="3"></select>
-
     </div>
 
   </body>
@@ -1213,11 +1243,11 @@
 
       view.ui.add(searchWidget, "top-right");
       view.ui.add(info_button, "top-left");
+      view.ui.add(filter_button, "top-left");
       view.ui.add(home_button, "top-left");
       view.ui.add(compass_button, "bottom-left");
       view.ui.add(zoom_button, "top-left");
       view.ui.add(locate_button, "top-left");
-      view.ui.add(filter_button, "top-left");
       view.ui.components = (["attribution"]);
 
       //view.popup.viewModel.actions.getItemAt(0).visible = false;
@@ -1281,7 +1311,7 @@
       let hours_layerview;
 
       // protein
-      let proteins = ["Beef", "Chicken", "Pork"];
+      let proteins = ["Beef", "Chicken", "Duck", "Lamb", "Pork", "Seafood", "Sweet/Dessert", "Veggie", "Venison", "Alternative meat", "Other"];
       let select1 = document.getElementById("protein_select");
       for (var i = 0; i < proteins.length; i++) {
           var option = document.createElement("option");
@@ -1297,7 +1327,7 @@
       });
 
       // diet
-      let dietary = ["Dairy Free", "Nut Free", "Vegan", "No Onion and Garlic"];
+      let dietary = ["Gluten Free", "Dairy Free", "Nut Free", "Vegetarian", "Vegan", "No Onion and Garlic"];
       let select2 = document.getElementById("dietary_select");
       for (var i = 0; i < dietary.length; i++) {
           var option = document.createElement("option");
@@ -1474,8 +1504,8 @@
           console.log(where_clause);
 
           //document.getElementById("filter_button").style.background = "#e0e0e0";
-          document.getElementById("empty_button").style.background = "#ffb3a7";
-
+          document.getElementById("empty_button").style.background = "#fff";
+          document.getElementById("empty_button").style.color = "#333";
       };
 
       window.empty=function() {
@@ -1486,7 +1516,8 @@
         standard_layerview.filter = where_clause;
         hours_layerview.filter = where_clause;
         //document.getElementById("filter_button").style.background = "#fff";
-        document.getElementById("empty_button").style.background = "#fff";
+        document.getElementById("empty_button").style.background = "#e8e8e8";
+        document.getElementById("empty_button").style.color = "#969696";
       };
 
       view.whenLayerView(cluster_feature).then(function (layerView) {
@@ -1535,20 +1566,6 @@
         duration: 2000
       };
 
-      function recenter(lat, lng){
-
-        var current_extent = view.extent
-        min_extent = webMercatorUtils.xyToLngLat(current_extent.xmin, current_extent.ymin)
-
-        var new_lng = lng
-        var new_lat = (lat + min_extent[1]) /2
-
-        view.goTo({
-          extent: [new_lng, new_lat]
-        },goto_options);
-
-      }
-
       view.on("click", function (event) {
         var screenPoint = {
           x: event.x,
@@ -1576,8 +1593,6 @@
         view.goTo({
           extent: [lng, lat]
         },goto_options);
-
-        recenter(lat, lng)
 
         // var current_extent = view.extent
         // min_extent = webMercatorUtils.xyToLngLat(current_extent.xmin, current_extent.ymin)
