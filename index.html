@@ -720,9 +720,7 @@
           let collection2 = document.querySelectorAll("#" + id2 + " option");
           collection2.forEach(function (x2) {
               if (x2.selected) {
-                console.log(typeof(x2))
                   result2.push(x2.value);
-                  console.log(x2.value)
               };
           });
 
@@ -761,7 +759,7 @@
           if(result1.length == 0){
             filter1 = entry1 + " IS NOT NULL";
           } else {
-            result_joined1 = result1.join("%' And " + entry1 + " LIKE '%")
+            result_joined1 = result1.join("%' Or " + entry1 + " LIKE '%")
             filter1 = entry1 + " LIKE '%" + result_joined1 + "%'";
           };
 
@@ -782,19 +780,19 @@
           if(result4.length == 0){
             filter4 = entry4 + " IS NOT NULL";
           } else {
-            filter4 = entry4 + " IN (" + result4 + ")";
+            filter4 = entry4 + " = " + result4;
           };
 
           if(result5.length == 0){
             filter5 = entry5 + " IS NOT NULL";
           } else {
-            filter5 = entry5 + " IN (" + result5 + ")";
+            filter5 = entry5 + " = " + result5;
           };
 
           if(result6.length == 0){
             filter6 = entry6 + " IS NOT NULL";
           } else {
-            filter6 = entry6 + " IN (" + result6 + ")";
+            filter6 = entry6 + " = " + result6;
           };
 
           var filter_list = [filter1, filter2, filter3, filter4, filter5, filter6];
@@ -882,10 +880,6 @@
         var lng = graphic.attributes.lng
         var lat = graphic.attributes.lat
 
-        console.log(lat)
-        console.log(current_zoom)
-
-
         view.goTo({
           extent: [lng, lat]
         },goto_options);
@@ -915,8 +909,6 @@
       var hideDIV = document.getElementById(div);
       hideDIV.classList.add('hidden');
     };
-
-    console.log(view.map.layers)
 
     var loadLayer = view.map.layers.getItemAt(1)
 
