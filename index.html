@@ -294,671 +294,6 @@
 
   </script>
 
-  <script type="text/plain" id="opening-status-arcade">
-
-    var CurrentDay = Weekday(Date())
-
-    if (CurrentDay == 0){
-        var thisDay = "Sun";
-    } else if (CurrentDay == 1){
-        var thisDay = "Mon";
-    } else if (CurrentDay == 2){
-        var thisDay = "Tue";
-    } else if (CurrentDay == 3){
-        var thisDay = "Wed";
-    } else if (CurrentDay == 4){
-        var thisDay = "Thu";
-    } else if (CurrentDay == 5){
-        var thisDay = "Fri";
-    } else if (CurrentDay == 6){
-        var thisDay = "Sat";
-    }
-
-    var days = $feature["open_hours_" + thisDay]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-
-    }
-    return status
-
-
-  </script>
-  <script type="text/plain" id="todays-hours-arcade">
-    var cYear = Year(Now())
-    var cMonth = Month(Now())
-    var cDay = Day(Now())
-    var cDate = Date(cYear,cMonth,cDay);
-
-    var selectDay = Weekday(Date())
-    //var selectDay = Weekday(DateAdd((Date()),24,"hours"))
-
-    if (selectDay == 0){
-        var thenDay = "Sun";
-    } else if (selectDay == 1){
-        var thenDay = "Mon";
-    } else if (selectDay == 2){
-        var thenDay = "Tue";
-    } else if (selectDay == 3){
-        var thenDay = "Wed";
-    } else if (selectDay == 4){
-        var thenDay = "Thu";
-    } else if (selectDay == 5){
-        var thenDay = "Fri";
-    } else if (selectDay == 6){
-        var thenDay = "Sat";
-    }
-
-    var thisDay = $feature["open_hours_" + thenDay]
-
-    if (thisDay == "Closed"){
-        var status = "Closed";
-    } else if (thisDay == "Unknown"){
-        var status = "Unknown"
-    } else {
-        var hours = Split(thisDay,'/')
-
-        var open = hours[0]
-        var close = hours[1]
-
-        var openHour = Left(open,2)
-        var openMin = Right(open,2)
-        var closeHour = Left(close,2)
-        var closeMin = Right(open,2)
-
-        var openNum = Number(openHour)
-        var closeNum = Number(closeHour)
-
-        if (openNum < 12){
-            var oTime = openNum + ":" + openMin + "am";
-        } else if (openNum > 12 && openNum < 24){
-            var n = Text(openNum-12)
-            var oTime = n + ":" + openMin + "pm";
-        } else if (openNum == 24){
-            var n = Text(openNum-12)
-            var oTime = n + ":" + openMin + "am";
-        } else if (openNum == 12){
-    	var oTime = openNum + ":" + openMin + "pm";
-        }
-
-        if (closeNum < 12){
-            var cTime = closeNum + ":" + closeMin + "am";
-        } else if (closeNum > 12 && closeNum < 24){
-            var n = Text(closeNum-12)
-            var cTime = n + ":" + closeMin + "pm";
-        } else if (closeNum == 24){
-            var n = Text(closeNum-12)
-            var cTime = n + ":" + closeMin + "am";
-        } else if (closeNum == 12) {
-    	var cTime = closeNum + ":" + closeMin + "pm";
-        }
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-
-            var openHour2 = Left(open2,2)
-            var openMin2 = Right(open2,2)
-            var closeHour2 = Left(close2,2)
-            var closeMin2 = Right(open2,2)
-
-            var openNum2 = Number(openHour2)
-            var closeNum2 = Number(closeHour2)
-
-            if (openNum2 < 12){
-                var oTime2 = openNum2 + ":" + openMin2 + "am";
-            } else if (openNum2 > 12 && openNum2 < 24){
-                var n2 = Text(openNum2-12)
-                var oTime2 = n2 + ":" + openMin2 + "pm";
-            } else if (openNum2 == 24){
-                var n2 = Text(openNum2-12)
-                var oTime2 = n2 + ":" + openMin2 + "am";
-            } else if (openNum2 == 12) {
-    	    var oTime2 = openNum2 + ":" + openMin2 + "pm";
-            }
-
-            if (closeNum2 < 12){
-                var cTime2 = closeNum2 + ":" + closeMin2 + "am";
-            } else if (closeNum2 > 12 && closeNum2 < 24){
-                var n2 = Text(closeNum2-12)
-                var cTime2 = n2 + ":" + closeMin2 + "pm";
-            } else if (closeNum2 == 24){
-                var n2 = Text(closeNum2-12)
-                var cTime2 = n2 + ":" + closeMin2 + "am";
-            } else if (closeNum2 == 12) {
-    	    var cTime2 = closeNum2 + ":" + closeMin2 + "pm";
-            }
-
-            var displayTime = oTime + " to " + cTime + ' and ' + oTime2 + " to " + cTime2
-            var status = displayTime
-
-        } else {
-            var displayTime = oTime + " to " + cTime;
-            var status = displayTime
-        };
-    }
-
-    return status
-  </script>
-  <script type="text/plain" id="tomorrows-hours-arcade">
-    var cYear = Year(Now())
-    var cMonth = Month(Now())
-    var cDay = Day(Now())
-    var cDate = Date(cYear,cMonth,cDay);
-
-    //var selectDay = Weekday(Date())
-    var selectDay = Weekday(DateAdd((Date()),24,"hours"))
-
-    if (selectDay == 0){
-        var thenDay = "Sun";
-    } else if (selectDay == 1){
-        var thenDay = "Mon";
-    } else if (selectDay == 2){
-        var thenDay = "Tue";
-    } else if (selectDay == 3){
-        var thenDay = "Wed";
-    } else if (selectDay == 4){
-        var thenDay = "Thu";
-    } else if (selectDay == 5){
-        var thenDay = "Fri";
-    } else if (selectDay == 6){
-        var thenDay = "Sat";
-    }
-
-    if (selectDay == 0){
-        var printDay = "Sunday";
-    } else if (selectDay == 1){
-        var printDay = "Monday";
-    } else if (selectDay == 2){
-        var printDay = "Tuesday";
-    } else if (selectDay == 3){
-        var printDay = "Wednesday";
-    } else if (selectDay == 4){
-        var printDay = "Thursday";
-    } else if (selectDay == 5){
-        var printDay = "Friday";
-    } else if (selectDay == 6){
-        var printDay = "Saturday";
-    }
-
-    var thisDay = $feature["open_hours_" + thenDay]
-
-    if (thisDay == "Closed"){
-        var status = "Closed";
-    }else if (thisDay == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(thisDay,'/')
-
-        var open = hours[0]
-        var close = hours[1]
-
-        var openHour = Left(open,2)
-        var openMin = Right(open,2)
-        var closeHour = Left(close,2)
-        var closeMin = Right(open,2)
-
-        var openNum = Number(openHour)
-        var closeNum = Number(closeHour)
-
-        if (openNum < 12){
-            var oTime = openNum + ":" + openMin + "am";
-        } else if (openNum > 12 && openNum < 24){
-            var n = Text(openNum-12)
-            var oTime = n + ":" + openMin + "pm";
-        } else if (openNum == 24){
-            var n = Text(openNum-12)
-            var oTime = n + ":" + openMin + "am";
-        } else if (openNum == 12){
-      var oTime = openNum + ":" + openMin + "pm";
-        }
-
-        if (closeNum < 12){
-            var cTime = closeNum + ":" + closeMin + "am";
-        } else if (closeNum > 12 && closeNum < 24){
-            var n = Text(closeNum-12)
-            var cTime = n + ":" + closeMin + "pm";
-        } else if (closeNum == 24){
-            var n = Text(closeNum-12)
-            var cTime = n + ":" + closeMin + "am";
-        } else if (closeNum == 12) {
-      var cTime = closeNum + ":" + closeMin + "pm";
-        }
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-
-            var openHour2 = Left(open2,2)
-            var openMin2 = Right(open2,2)
-            var closeHour2 = Left(close2,2)
-            var closeMin2 = Right(open2,2)
-
-            var openNum2 = Number(openHour2)
-            var closeNum2 = Number(closeHour2)
-
-            if (openNum2 < 12){
-                var oTime2 = openNum2 + ":" + openMin2 + "am";
-            } else if (openNum2 > 12 && openNum2 < 24){
-                var n2 = Text(openNum2-12)
-                var oTime2 = n2 + ":" + openMin2 + "pm";
-            } else if (openNum2 == 24){
-                var n2 = Text(openNum2-12)
-                var oTime2 = n2 + ":" + openMin2 + "am";
-            } else if (openNum2 == 12) {
-          var oTime2 = openNum2 + ":" + openMin2 + "pm";
-            }
-
-            if (closeNum2 < 12){
-                var cTime2 = closeNum2 + ":" + closeMin2 + "am";
-            } else if (closeNum2 > 12 && closeNum2 < 24){
-                var n2 = Text(closeNum2-12)
-                var cTime2 = n2 + ":" + closeMin2 + "pm";
-            } else if (closeNum2 == 24){
-                var n2 = Text(closeNum2-12)
-                var cTime2 = n2 + ":" + closeMin2 + "am";
-            } else if (closeNum2 == 12) {
-          var cTime2 = closeNum2 + ":" + closeMin2 + "pm";
-            }
-
-            var displayTime = oTime + " to " + cTime + ' and ' + oTime2 + " to " + cTime2
-            var status = displayTime
-
-        } else {
-            var displayTime = oTime + " to " + cTime;
-            var status = displayTime
-        };
-    };
-
-    var T = printDay + "'s hours: "
-    var TT = Concatenate([T," ",status])
-    return TT
-
-  </script>
-
-  <script type="text/plain" id="monday-arcade">
-
-    var days = $feature["open_hours_Mon"]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-    }
-    return status
-
-
-  </script>
-  <script type="text/plain" id="tuesday-arcade">
-
-    var days = $feature["open_hours_Tue"]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-    }
-    return status
-
-
-  </script>
-  <script type="text/plain" id="wednesday-arcade">
-
-    var days = $feature["open_hours_Wed"]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-    }
-    return status
-
-
-  </script>
-  <script type="text/plain" id="thursday-arcade">
-
-    var days = $feature["open_hours_Thu"]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-    }
-    return status
-
-
-  </script>
-  <script type="text/plain" id="friday-arcade">
-
-    var days = $feature["open_hours_Fri"]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-    }
-    return status
-
-
-  </script>
-  <script type="text/plain" id="saturday-arcade">
-
-    var days = $feature["open_hours_Sat"]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-    }
-    return status
-
-
-  </script>
-  <script type="text/plain" id="sunday-arcade">
-
-    var days = $feature["open_hours_Sun"]
-
-    if (days == "Closed"){
-        var status = "Closed";
-    } else if (days == "Unknown"){
-        var status = "Unknown";
-    } else {
-        var hours = Split(days,'/')
-        var open1 = hours[0]
-        var close1 = hours[1]
-
-        if (Count(hours) > 2){
-            var open2 = hours[2];
-            var close2 = hours[3];
-        } else {
-            var open2 = 0;
-            var close2 = 0;}
-
-        var hour = Hour(Now())
-        var minute = Minute(Now())
-
-        if (minute < 10){
-            var time = Number(Text(hour) + Text(0) + Text(minute));
-        } else {
-            var time = Number(Text(hour) + Text(minute));
-        }
-
-        if (open1 < time && time < (close1-100)){
-            var status = "Open"
-
-        } else if ((close1-100) < time && time < close1){
-            var status = "Closing Soon"
-
-        } else if (open2 < time && time < (close2-100)){
-            var status = "Open"
-
-        } else if ((close2-100) < time && time < close2){
-            var status = "Closing Soon"
-
-        } else {
-            var status = "Closed";
-        }
-    }
-    return status
-
-
-  </script>
-
-
   <script>
 
     require([
@@ -1005,21 +340,6 @@
           name: "beer-match-arcade",
           title: "Beer Match",
           expression: document.getElementById("beer-match-arcade").text
-        },
-        {
-          name: "opening-status-arcade",
-          title: "Opening Status",
-          expression: document.getElementById("opening-status-arcade").text
-        },
-        {
-          name: "todays-hours-arcade",
-          title: "Todays Hours",
-          expression: document.getElementById("todays-hours-arcade").text
-        },
-        {
-          name: "tomorrows-hours-arcade",
-          title: "Tomorrows Hours",
-          expression: document.getElementById("tomorrows-hours-arcade").text
         }
       ];
 
@@ -1044,13 +364,6 @@
                   "Address: {address}"
           },
           {
-            type: "text",
-            text: "Currently: <b>{expression/opening-status-arcade}</b>" + "<br>" +
-                  "Today's hours: {expression/todays-hours-arcade}" + "<br>" +
-                  "{expression/tomorrows-hours-arcade}"
-
-          },
-          {
             type: "media",
             mediaInfos: [
               {
@@ -1072,7 +385,7 @@
 
       const burger_feature = new FeatureLayer({
         url:
-          "https://services.arcgis.com/hMYNkrKaydBeWRXE/arcgis/rest/services/burger_locations_2020/FeatureServer/0",
+          "https://services.arcgis.com/hMYNkrKaydBeWRXE/arcgis/rest/services/burger_locations_2021/FeatureServer/0",
           outFields: ["*"],
           title: "Burger Locations",
           popupTemplate: popup_template,
@@ -1117,7 +430,7 @@
 
       const cluster_feature = new FeatureLayer({
         url:
-          "https://services.arcgis.com/hMYNkrKaydBeWRXE/arcgis/rest/services/Clustered_Burger_Locations_2020/FeatureServer/0",
+          "https://services.arcgis.com/hMYNkrKaydBeWRXE/arcgis/rest/services/Clustered_Burger_Locations_2021/FeatureServer/0",
         outFields: ["*"],
         title: "Burger Locations",
         featureReduction: clusterConfig,
@@ -1126,22 +439,6 @@
 
       var date = new Date();
       var day = date.getDay();
-
-      if (day == 0){
-        dayArcade = document.getElementById("sunday-arcade").text;
-        } else if (day == 1){
-        dayArcade = document.getElementById("monday-arcade").text;
-        } else if (day == 2){
-        dayArcade = document.getElementById("tuesday-arcade").text;
-        } else if (day == 3){
-        dayArcade = document.getElementById("wednesday-arcade").text;
-        } else if (day == 4){
-        dayArcade = document.getElementById("thursday-arcade").text;
-        } else if (day == 5){
-        dayArcade = document.getElementById("friday-arcade").text;
-        } else if (day == 6){
-        dayArcade = document.getElementById("saturday-arcade").text;
-      };
 
       function createSymbol(color) {
         return {
@@ -1157,44 +454,9 @@
         };
       }
 
-      var rendererTemplate = {
-        type: "unique-value",
-        valueExpression: dayArcade,
-        valueExpressionTitle: "open-hours",
-        uniqueValueInfos: [
-          {
-            value: "Open",
-            symbol: createSymbol("#8EC63F"),
-            label: "Open"
-          },
-          {
-            value: "Closed",
-            symbol: createSymbol("#F05342"),
-            label: "Closed"
-          },
-          {
-            value: "Unknown",
-            symbol: createSymbol("#C1C1C1"),
-            label: "Unknown"
-          },
-          {
-            value: "Closing Soon",
-            symbol: createSymbol("#F89E36"),
-            label: "Closing Soon"
-          }]
-      };
-
-      const hours_feature = new FeatureLayer({
-        url:
-          "https://services.arcgis.com/hMYNkrKaydBeWRXE/arcgis/rest/services/Opening_Hours_Burger_Locations_2020/FeatureServer",
-          outFields: [],
-          renderer: rendererTemplate,
-          title: "Venue Hours",
-      });
-
       const map = new Map({
         basemap: "streets-navigation-vector",
-        layers: [burger_feature, hours_feature, cluster_feature]
+        layers: [burger_feature, cluster_feature]
       });
 
       const view = new MapView({
@@ -1345,7 +607,6 @@
       // Filters
       let cluster_layerview;
       let standard_layerview;
-      let hours_layerview;
 
       // protein
       let proteins = ["Beef", "Chicken", "Duck", "Fish", "Lamb", "Pork", "Seafood", "Sweet/Dessert", "Veggie", "Venison", "Alternative meat", "Other"];
@@ -1450,7 +711,8 @@
           let collection1 = document.querySelectorAll("#" + id1 + " option");
           collection1.forEach(function (x1) {
               if (x1.selected) {
-                  result1.push(x1.value);
+                x1value = x1.value.replaceAll("'","")
+                result1.push(x1value);
               };
           });
 
@@ -1458,7 +720,9 @@
           let collection2 = document.querySelectorAll("#" + id2 + " option");
           collection2.forEach(function (x2) {
               if (x2.selected) {
+                console.log(typeof(x2))
                   result2.push(x2.value);
+                  console.log(x2.value)
               };
           });
 
@@ -1497,7 +761,8 @@
           if(result1.length == 0){
             filter1 = entry1 + " IS NOT NULL";
           } else {
-            filter1 = entry1 + " IN (" + result1 + ")";
+            result_joined1 = result1.join("%' And " + entry1 + " LIKE '%")
+            filter1 = entry1 + " LIKE '%" + result_joined1 + "%'";
           };
 
           if(result2.length == 0){
@@ -1536,7 +801,6 @@
           var where_clause = {where: filter_list.join(" And ")}
           cluster_layerview.filter = where_clause;
           standard_layerview.filter = where_clause;
-          hours_layerview.filter = where_clause;
 
           console.log(where_clause);
 
@@ -1551,7 +815,6 @@
         var where_clause = {where: "OBJECTID IS NOT NULL"};
         cluster_layerview.filter = where_clause;
         standard_layerview.filter = where_clause;
-        hours_layerview.filter = where_clause;
         //document.getElementById("filter_button").style.background = "#fff";
         document.getElementById("empty_button").style.background = "#e8e8e8";
         document.getElementById("empty_button").style.color = "#969696";
@@ -1563,10 +826,6 @@
 
       view.whenLayerView(burger_feature).then(function (layerView) {
         standard_layerview = layerView;
-      });
-
-      view.whenLayerView(hours_feature).then(function (layerView) {
-        hours_layerview = layerView;
       });
 
       // Close Expand Widgets
@@ -1659,7 +918,7 @@
 
     console.log(view.map.layers)
 
-    var loadLayer = view.map.layers.getItemAt(2)
+    var loadLayer = view.map.layers.getItemAt(1)
 
     // Hide the loading indicator when the view stops updating
     watchUtils.whenTrue(loadLayer, "loaded", function(evt) {
